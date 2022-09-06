@@ -10,7 +10,7 @@ def load(path):
     # print(pdx_v)
 
 
-def get_pdx(lines):
+def get_pdx(lines, cycle = 0):
     header = None
     values = {}
 
@@ -28,6 +28,7 @@ def get_pdx(lines):
                 if [*(line.strip())][-1] == "{":
                     header = parts[0].strip()
                     # print("Header: " + header)
+                    # print("Cycle: " + str(cycle))
 
                     new_lines = []  # Create subset of value lines
 
@@ -35,17 +36,20 @@ def get_pdx(lines):
                         ii = i + 1
                         value_line = str(lines[ii])
                         closed_bracket_skip = 0
-
+                        if cycle == 0:
+                            closed_bracket_skip = 1
                         while value_line.find("}") == -1 or closed_bracket_skip > 0:
                             value_line = lines[ii]
 
                             # print("VL: " + value_line[:-1])
                             if value_line.find("{") != -1:
+                                # print("Found an open bracket!")
                                 closed_bracket_skip += 1
+                                # print("Closed bracket skip is now: " + str(closed_bracket_skip))
 
                             if value_line.find("}") != -1:
+                                # print("Found a closed bracket!")
                                 closed_bracket_skip -= 1
-
 
                             new_lines.append(value_line)
                             if ii < len(lines) - 1:
@@ -53,11 +57,12 @@ def get_pdx(lines):
                             else:
                                 # print("Index too big")
                                 break
-                        # print("New Lines: " + str(new_lines))
+                        # print("Finished space between { and } in cycle " + str(cycle))
+                        # print("Value Lines: " + str(new_lines))
 
                         i += len(new_lines)  # Skip new lines to not add their values directly into the set
                         # print("i was added to. i is now: "+ str(i))
-                    new_header, new_values = get_pdx(new_lines)  # This seems dangerous, and it's because
+                    new_header, new_values = get_pdx(new_lines, cycle=cycle+1)  # This seems dangerous, and it's because
                     # print("Received header: " + str(new_header))
                     # print("Received values: " + str(new_values))
                     # it is
@@ -73,10 +78,12 @@ def get_pdx(lines):
                     values[str(parts[0].strip())] = parts[1].split("#")[0].strip()
         i += 1
 
-    if values.get(header):
-        header = None
-    print("Header [end]: " + str(header))
-    print("Values: " + str(values))
-    if new_lines:
-        print("With lines: " + str(new_lines))
+    #if values.get(header):
+    #    header = None
+    # print("Header [end]: " + str(header))
+    # print("Values: " + str(values))
+    # if new_lines:
+    #     print("With lines: " + str(new_lines))
     return header, values
+
+# print(load("test_idas.txt"))
