@@ -20,12 +20,14 @@ def get_pdx(lines, cycle = 0):
         # print("i: " + str(i))
         line = lines[i]
 
-        if [*line][0] != "#" and line.strip() != ("" or "}"):
-            # print("Valid line: " + line[:-1])
-            parts = line.split("=")
+        if ([*line][0] != "#" or cycle > 0) and \
+                line.strip() != ("" or "}" or '\n') \
+                and line.strip():
+            # print("Valid line: " + str(ascii(line)))
+            parts = line.split("#")[0].split("=")
             if len(parts) > 1:
                 # print("Line contains value")
-                if [*(line.strip())][-1] == "{":
+                if [*(parts[1].strip())][-1] == "{":
                     header = parts[0].strip()
                     # print("Header: " + header)
                     # print("Cycle: " + str(cycle))
@@ -75,8 +77,18 @@ def get_pdx(lines, cycle = 0):
                         else:
                             values[new_header] = new_values
                 else:
-                    values[str(parts[0].strip())] = parts[1].split("#")[0].strip()
+                    if parts[1].split("#")[0].strip() is not None:
+                        values[str(parts[0].strip())] = parts[1].split("#")[0].strip()
+            elif line.strip():
+                if [*line.strip()][0] == "#" and cycle > 0:
+                    values = line.strip()
+                    print("Added line as reference")
+            else:
+                values[str(parts[0].strip())] = line
+        # else:
+            # print("invalid line: " + line.strip())
         i += 1
+
 
     #if values.get(header):
     #    header = None
