@@ -1,0 +1,40 @@
+#
+#
+#
+TST_ideas = {
+	start = {
+		possible_policy = 5
+		diplomatic_reputation = 2
+	}
+
+    bonus = {
+		administrative_efficiency = 0.05
+	}
+
+	trigger = {
+		tag = HLR
+	}
+	free = yes
+
+	hlr_imperial_throne = {
+		legitimacy = 1.5 #unique (it's the HRE :D)
+	}
+	hlr_kaiserliche_armee = {
+		land_morale = 0.15
+	}
+	hlr_imperial_diplomacy = {
+		improve_relation_modifier = 0.33
+	}
+	hlr_centralised_empire = {
+		global_tax_modifier = 0.2
+	}
+	hlr_roman_heritage = {
+		core_creation = -0.2
+	}
+	hlr_adopting_the_goosestep = {
+		discipline = 0.05
+	}
+	hlr_onwards_and_upwards = {
+		governing_capacity_modifier = 0.1
+	}
+}

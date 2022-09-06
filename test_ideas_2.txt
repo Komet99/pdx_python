@@ -1,0 +1,8 @@
+start = {
+    possible_policy = 5
+    diplomatic_reputation = 2
+
+    bonus = {
+        global_manpower_modifier = 0.20
+        }
+}
