@@ -64,10 +64,10 @@ def get_pdx(lines, cycle = 0):
 
                         i += len(new_lines)  # Skip new lines to not add their values directly into the set
                         # print("i was added to. i is now: "+ str(i))
-                    new_header, new_values = get_pdx(new_lines, cycle=cycle+1)  # This seems dangerous, and it's because
+                    new_header, new_values = get_pdx(new_lines, cycle=cycle+1)  # This seems dangerous, and it's
+                    # because it is
                     # print("Received header: " + str(new_header))
                     # print("Received values: " + str(new_values))
-                    # it is
 
                     if new_header is None:
                         values[header] = new_values
@@ -78,11 +78,12 @@ def get_pdx(lines, cycle = 0):
                             values[new_header] = new_values
                 else:
                     if parts[1].split("#")[0].strip() is not None:
-                        values[str(parts[0].strip())] = parts[1].split("#")[0].strip()
-            elif line.strip():
-                if [*line.strip()][0] == "#" and cycle > 0:
-                    values = line.strip()
-                    print("Added line as reference")
+                        values = dict(values)
+                        values[str(parts[0].strip())] = (parts[1].split("#")[0]).strip()
+
+            elif [*line.strip()][0] == "#" and cycle > 0:
+                values = {line.strip()}
+                # print("Added line as reference")
             else:
                 values[str(parts[0].strip())] = line
         # else:
@@ -98,4 +99,4 @@ def get_pdx(lines, cycle = 0):
     #     print("With lines: " + str(new_lines))
     return header, values
 
-# print(load("test_idas.txt"))
+print(load("test_idas.txt"))
