@@ -6,11 +6,35 @@ def load(path):
     file = open(path)
     lines = file.readlines()
     pdx_h, pdx_v = get_pdx(lines)
-    return pdx_v
+    return dict(pdx_v)
     # print(pdx_v)
 
 
-def get_pdx(lines, cycle = 0):
+def loads(string):
+    lines = str(string).splitlines()
+    pdx_h, pdx_v = get_pdx(lines)
+    return pdx_v
+
+
+def dump_dict(content_dict, path):
+    assert type(content_dict) == dict
+    file = open(path)
+    lines = []
+
+    for idea_key in content_dict.keys():
+        print(idea_key + " = " + "{\n")
+        for i, (k, v) in enumerate(content_dict[idea_key].items()):
+            print()
+            if type(v) == dict:
+                vals = {}
+                for e in range(len(v)):
+                    if len(v) > 1:
+                        print(v + " = " + "{\n")
+                    for (v_key, v_val) in enumerate(v.items()):
+        print("}\n")
+
+
+def get_pdx(lines, cycle=0):
     header = None
     values = {}
 
@@ -64,12 +88,12 @@ def get_pdx(lines, cycle = 0):
 
                         i += len(new_lines)  # Skip new lines to not add their values directly into the set
                         # print("i was added to. i is now: "+ str(i))
-                    new_header, new_values = get_pdx(new_lines, cycle=cycle+1)  # This seems dangerous, and it's
+                    new_header, new_values = get_pdx(new_lines, cycle=cycle + 1)  # This seems dangerous, and it's
                     # because it is
                     # print("Received header: " + str(new_header))
                     # print("Received values: " + str(new_values))
 
-                    if new_header is None:
+                    if new_header is None and cycle > 0:
                         values[header] = new_values
                     else:
                         if new_values.get(new_header):
@@ -78,20 +102,18 @@ def get_pdx(lines, cycle = 0):
                             values[new_header] = new_values
                 else:
                     if parts[1].split("#")[0].strip() is not None:
-                        values = dict(values)
                         values[str(parts[0].strip())] = (parts[1].split("#")[0]).strip()
 
-            elif [*line.strip()][0] == "#" and cycle > 0:
+            elif [*line.strip()][0] == "#" and cycle > 0 and lines == 1:
                 values = {line.strip()}
                 # print("Added line as reference")
             else:
                 values[str(parts[0].strip())] = line
         # else:
-            # print("invalid line: " + line.strip())
+        # print("invalid line: " + line.strip())
         i += 1
 
-
-    #if values.get(header):
+    # if values.get(header):
     #    header = None
     # print("Header [end]: " + str(header))
     # print("Values: " + str(values))
@@ -99,4 +121,4 @@ def get_pdx(lines, cycle = 0):
     #     print("With lines: " + str(new_lines))
     return header, values
 
-print(load("test_idas.txt"))
+# print(load("test_idas.txt"))
