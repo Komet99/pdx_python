@@ -207,17 +207,3 @@ def get_pdx(lines, cycle=0):
     # if new_lines:
     #     print("With lines: " + str(new_lines))
     return header, values
-
-
-def test():
-    tst_dict = load("tst.txt")
-    print("Ideaset as array: " + str(tst_dict))
-    tst_lines = set_pdx(tst_dict)
-    print("-----Final Lines------")
-    s = ""
-    for line in tst_lines:
-        s += line
-    print(s)
-
-
-test()
