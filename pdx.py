@@ -124,7 +124,7 @@ def get_pdx(lines, cycle=0):
                     }
                 '''
                 # The comment would otherwise be misinterpreted by the system
-                if len(parts) > 1:
+                if len(parts) == 2:
                     # Line contains an "=" -> contains a value
                     if [*(parts[1].strip())][-1] == "{":
                         header = parts[0].strip()
@@ -178,10 +178,9 @@ def get_pdx(lines, cycle=0):
 
                         if new_header is None and cycle > 0:
                             values[header] = new_values
-                        elif cycle > 0:
-                            values[new_header] = new_values
                         else:
                             values[header] = new_values
+
                     else:
                         values[str(parts[0].strip())] = (parts[1]).strip()
                         # For simple values, such as
@@ -189,10 +188,37 @@ def get_pdx(lines, cycle=0):
                         idea_cost = -0.1
                         '''
                         # This does the trick
+                if len(parts) > 2:
+                    if line.find("{") != -1:
+                        header = parts[0].strip()
+                        '''
+                        This is specifically for header-values, which go like this:
+                        header = {
+                            blabla = 1
+                            booboo = -0.1
+                        }
+                        '''
+                        new_lines = []
+                        part2 = line.split("#")[0].split("{")
+                        lines.insert(i + 1, part2[1])
+                        """
+                        Sadly, we need some extra rules for situations like these:
+                        NOT = { has_country_flag = refused_norse_ideas }
+                        As you can see, the usual approach utilizing line breaks would not work here.
+                        """
+                        # new_lines.append(line[0:(line.find("{") + 1)])
+                        new_lines.append(part2[1][0:part2[1].find("}")])
+                        # new_lines.append("}")
+                        print("Special new lines: " + str(new_lines))
+                        new_header, new_values = get_pdx(new_lines, cycle=cycle + 1)
+                        # This seems dangerous, and it's because it is
+                        # This should in theory resolve everything in the right order. However, it does not.
 
+                        values[header] = new_values
+                        i += 1
+                    else:
+                        print("No idea what this is. Error at: ", line)
                 elif [*line.strip()][0] == "#" and cycle > 0:
-                    # Originally there was a check here which tested
-                    # whether len(lines) == 2. Didn't understand it, removed it.
                     values = {}
                     # print("Added line as reference")
                 # if not, it's an invalid line
@@ -207,3 +233,17 @@ def get_pdx(lines, cycle=0):
     # if new_lines:
     #     print("With lines: " + str(new_lines))
     return header, values
+
+
+def test():
+    tst_dict = load("tst.txt")
+    print("Ideaset as array: " + str(tst_dict))
+    tst_lines = set_pdx(tst_dict)
+    print("-----Final Lines------")
+    s = ""
+    for line in tst_lines:
+        s += line
+    print(s)
+
+
+test()
