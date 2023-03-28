@@ -1,6 +1,5 @@
 from collections import OrderedDict
 
-
 def load(path):
     file = open(path)
     lines = file.readlines()
